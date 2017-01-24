@@ -4,7 +4,7 @@ Using statistic features in web traffic packets, classic machine learning algor
 Output the result that tell where the unknown traffic packets come from;
 To make it simple, 10 datasource files(*.pcap) were used;
 The demo system covers the application of 2-label classifiers and multiple-label classifiers.
-The simple-test result is awesome：
+The General simplified-test result is awesome：(still need to be improved)
 1.multiple-labels
   clf1
   1.0
@@ -85,7 +85,7 @@ The simple-test result is awesome：
 
   [[ 903    0]
    [   0 1203]]
-   
+
    Author ： Xiaobo Ma， graduation project (implementation of paper :: Research on mobile application identification technology based on network traffic statistics) ，Xi'an JiaoTong University
    References：
    Wang Q, Yahyavi A, Kemme B, et al. I know what you did on your smartphone: Inferring app usage over encrypted data traffic[C]// IEEE Conference on Communications and Network Security. IEEE, 2015:433-441.
