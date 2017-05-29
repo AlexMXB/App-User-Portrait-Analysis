@@ -62,8 +62,10 @@ def Store_packets_info(pcap):
     packets_length = []
     timestamp_set = []
     time2live = []
-    slidewindow = []
+    slidewindow20 = []
     var_set = []
+    slidewindow10 = []
+    varset = []
     percentage = []
 
     for timestamp, buf in pcap:
@@ -78,9 +80,9 @@ def Store_packets_info(pcap):
         # Pulling out src, dst, length, fragment info, TTL, and Protocol
         ip = eth.data
         # Pull out fragment information (flags and offset all packed into off field, so use bitmasks)
-        do_not_fragment = bool(ip.off & dpkt.ip.IP_DF)
-        more_fragments = bool(ip.off & dpkt.ip.IP_MF)
-        fragment_offset = ip.off & dpkt.ip.IP_OFFMASK
+        # do_not_fragment = bool(ip.off & dpkt.ip.IP_DF)
+        # more_fragments = bool(ip.off & dpkt.ip.IP_MF)
+        # fragment_offset = ip.off & dpkt.ip.IP_OFFMASK
         # Print out the info
         packets_length.append(ip.len+14)
         timestamp_set.append(timestamp)
@@ -110,11 +112,15 @@ def Store_packets_info(pcap):
     for i in range(len(packets_length)):
         slice = np.array(packets_length)[i:i+20]
         # print slice
-        slidewindow.append(np.mean(np.array(slice)))
+        slidewindow20.append(np.mean(np.array(slice)))
         var_set.append(np.var(np.array(slice)))
-        # print np.var(np.array(slice))
-        # print np.mean(np.array(slice))
-    # print slidewindow
+        print np.var(np.array(slice))
+        print np.mean(np.array(slice))
+        slicea = np.array(packets_length)[i:i+10]
+        # print slice
+        slidewindow10.append(np.mean(np.array(slicea)))
+        varset.append(np.var(np.array(slicea)))
+    print slidewindow20
     # print len(slidewindow)
     # print len(var_set)
 
@@ -127,18 +133,19 @@ def Store_packets_info(pcap):
 
     #     write datasets
     # format ::
-    # packet_length , timestamp_diff , time2live , average len of packge , var of total ,average of slidewindow , var of sliddewindow , label
+    # packet_length , timestamp_diff , time2live , average of slidewindow , var of sliddewindow , label
 
-    f = open('testdata\sampledataset.txt', 'a')
-    label = "COC"
+    f = open('testdata\sampledatasetslidewindow.txt', 'a')
+    label = "MT"
     for i in range(len(packets_length)):
         f.writelines(str(packets_length[i]) +",")
         f.writelines(str(timestamp_diff[i]) + ",")
         f.writelines(str(time2live[i]) + ",")
-        f.writelines(str(meanvalue) + ",")
-        f.writelines(str(var) + ",")
+        f.writelines(str(percentage[i]) + ",")
         f.writelines(str(var_set[i]) + ",")
-        f.writelines(str(slidewindow[i]) + ":")
+        f.writelines(str(slidewindow20[i]) + ",")
+        f.writelines(str(slidewindow10[i]) + ",")
+        f.writelines(str(varset[i]) + ":")
         f.writelines("%s" % label+'\n')
         i += 1
     f.close()
@@ -188,7 +195,7 @@ def print_http_request(pcap):
 
 def Go():
     """Open up a test pcap file and print out the packets"""
-    with open('testsource/COC300s.pcap', 'rb') as f:
+    with open('testsource/meituan300s.pcap', 'rb') as f:
         pcap = dpkt.pcap.Reader(f)
         Store_packets_info(pcap)
         # print_http_request(pcap)
